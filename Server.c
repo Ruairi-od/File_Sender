@@ -2,7 +2,7 @@
  * Server.c
  *
  *  Created on: 16 Dec 2015
- *      Author: Ruari O'Donoghue
+ *      Author: Ruairi O'Donoghue
  */
 #include "Server.h"
 
@@ -102,7 +102,7 @@ long rec_file(int cSocket, char *fName, char *client_ip)
 	printf("%s is the default folder name for this ip.\n", client_ip);
 //	printf("Would you like to set a folder name for %s? [y]es or [n]o ", client_ip);
 //	timer = timeSet(5);
-	//The user is prompted to set a folder name for the client and the timer is set to 5 seconds.
+//The user is prompted to set a folder name for the client and the timer is set to 5 seconds.
 //	while(timeUp(timer) != 1)//While the time limit is not reached
 //	{
 //		if(kbhit())//If any keyboard input is detected.
@@ -122,8 +122,7 @@ long rec_file(int cSocket, char *fName, char *client_ip)
 		nRx = recv(cSocket, reply, 1400, 0);//Attempt to recieve data from client in blocks of 1400.
 		if( nRx == -1)//Error receiving.
 		{
-			printf("Problem receiving\n");
-			error("");
+			error("Problem receiving\n");
 			bytes_written = -1;
 			stop = -1;//The error is printed and a flag is set to -1 to exit function and show error.
 		}
@@ -150,7 +149,7 @@ long rec_file(int cSocket, char *fName, char *client_ip)
 
 				if(file_size<=0)//If the file size is a negative number error by client sending file
 				{
-					printf("ERROR: Problem with file size from client.\n");
+					error("ERROR: Problem with file size from client.\n");
 					bytes_written = -2;
 					stop=1;//Flag set to exit function.
 				}
@@ -339,7 +338,7 @@ int getRequest(int cSocket, char *fName)
 	}
 	else if (nRx == 0)  // connection closing
 	{
-		printf("Connection closed by server\n");
+		printf("Connection closed by client\n");
 		return -1;//Exit function.
 	}
 	else//We have recevied some data from the client.
@@ -403,7 +402,6 @@ int main(int argc, char *argv[])
 	listen(serverSocket, 5);
 	printf("Listening on port %d\n", SERV_PORT);
 	clilen = sizeof(client);
-	printf("Accept\n");
 	cSocket = accept(serverSocket, (struct sockaddr *) &client, &clilen);
 	//sprintf( client_ip, "%d", client.sin_addr );
 	if (cSocket < 0) {
@@ -415,14 +413,12 @@ int main(int argc, char *argv[])
 	mode = getRequest(cSocket, fName);
 	if(mode == DOWNLOAD)//If the client wants to download from the server.
 	{
-		printf("Download Start\n");
 		bytes_sent = send_file(cSocket, fName);//Call the send_file function.
 		printf("File Sent\n");
 		printf("Total bytes sent = %ld\n", bytes_sent);//Print number of bytes sent to client.
 	}
 	else if (mode == UPLOAD) //If the client wants to upload to server.
 	{
-		printf("Upload Start\n");
 		bytes_rec = rec_file(cSocket, fName, "localhost");//Call the rec_file function.
 		printf("Upload Completed\n");
 		printf("Bytes written = %ld\n", bytes_rec);//Print number of bytes written to file.
