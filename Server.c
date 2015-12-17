@@ -2,7 +2,7 @@
  * Server.c
  *
  *  Created on: 16 Dec 2015
- *      Author: Ruari O'Donoghue
+ *      Author: Ruairi O'Donoghue
  */
 #include "Server.h"
 
